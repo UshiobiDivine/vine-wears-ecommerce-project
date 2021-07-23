@@ -1,7 +1,7 @@
 package com.divine.project.security.oauth2.user;
 
 import com.divine.project.exception.OAuth2AuthenticationProcessingException;
-import com.divine.project.model.AuthProvider;
+import com.divine.project.model.user.AuthProvider;
 
 import java.util.Map;
 

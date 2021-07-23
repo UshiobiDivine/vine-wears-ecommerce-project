@@ -1,4 +1,4 @@
-package com.divine.project.model;
+package com.divine.project.model.user;
 
 public enum  AuthProvider {
     local,

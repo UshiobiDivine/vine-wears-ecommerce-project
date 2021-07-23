@@ -1,8 +1,12 @@
 package com.divine.project.security.oauth2;
 
-import com.divine.project.model.User;
+import com.divine.project.exception.RoleNotFoundException;
+import com.divine.project.model.user.Role;
+import com.divine.project.model.user.RoleEnum;
+import com.divine.project.model.user.User;
 import com.divine.project.exception.OAuth2AuthenticationProcessingException;
-import com.divine.project.model.AuthProvider;
+import com.divine.project.model.user.AuthProvider;
+import com.divine.project.repository.RoleRepository;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.UserPrincipal;
 import com.divine.project.security.oauth2.user.OAuth2UserInfo;
@@ -17,6 +21,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +30,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -59,7 +67,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
 
-        return UserPrincipal.create(user, oAuth2User.getAttributes());
+        return UserPrincipal.build(user, oAuth2User.getAttributes());
     }
 
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
@@ -71,9 +79,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setEmail(oAuth2UserInfo.getEmail().toLowerCase());
         user.setImageUrl(oAuth2UserInfo.getImageUrl().toLowerCase());
         if(userRepository.count()==0) {
-            user.setUserRole("admin");
+            List<Role> rolesList = new ArrayList<>();
+            Optional<Role> adminRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN);
+            if (adminRole.isPresent()) {
+                rolesList.add(adminRole.get());
+                user.setRoles(rolesList);
+
+            }else {
+                throw new RoleNotFoundException("Role could not be fetched from the database");
+            }
+
         }else {
-            user.setUserRole("user");
+            List<Role> rolesList = new ArrayList<>();
+            Optional<Role> userRole = roleRepository.findByName(RoleEnum.ROLE_USER);
+            if (userRole.isPresent()) {
+                rolesList.add(userRole.get());
+                user.setRoles(rolesList);
+            }else {
+                throw new RoleNotFoundException("Role could not be fetched from the database");
+            }
         }
         return userRepository.save(user);
     }

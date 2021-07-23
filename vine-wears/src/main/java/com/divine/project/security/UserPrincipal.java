@@ -1,6 +1,6 @@
 package com.divine.project.security;
 
-import com.divine.project.model.User;
+import com.divine.project.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Long id;
@@ -24,6 +25,34 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         this.password = password;
         this.authorities = authorities;
     }
+
+    public UserPrincipal(String email, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.email = email;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
+
+    public static UserPrincipal build(User user){
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
+
+        return new UserPrincipal(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                authorities);
+
+    }
+
+    public static UserPrincipal build(User user, Map<String, Object> attributes) {
+        UserPrincipal userPrincipal = UserPrincipal.build(user);
+        userPrincipal.setAttributes(attributes);
+        return userPrincipal;
+    }
+
+
 
     public static UserPrincipal createUser(User user) {
         List<GrantedAuthority> authorities = Collections.
@@ -47,11 +76,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         );
     }
 
-    public static UserPrincipal create(User user, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.createUser(user);
-        userPrincipal.setAttributes(attributes);
-        return userPrincipal;
-    }
 
     public Long getId() {
         return id;

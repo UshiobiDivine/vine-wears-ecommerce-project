@@ -1,16 +1,21 @@
 package com.divine.project.controller;
 
 import com.divine.project.exception.BadRequestException;
-import com.divine.project.model.User;
-import com.divine.project.model.AuthProvider;
+import com.divine.project.exception.RoleNotFoundException;
+import com.divine.project.model.user.Role;
+import com.divine.project.model.user.RoleEnum;
+import com.divine.project.model.user.User;
+import com.divine.project.model.user.AuthProvider;
 import com.divine.project.payload.ApiResponse;
 import com.divine.project.payload.AuthResponse;
 import com.divine.project.payload.LoginRequest;
 import com.divine.project.payload.SignUpRequest;
+import com.divine.project.repository.RoleRepository;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.TokenProvider;
-import com.divine.project.util.mail.MailServiceImplementation;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import com.divine.project.util.mail.Mailjet;
+import com.mailjet.client.errors.MailjetException;
+import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +28,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -39,18 +47,20 @@ public class AuthController {
 
     @Autowired
     private TokenProvider tokenProvider;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
-    private MailServiceImplementation mail;
+    private Mailjet mailjet;
+
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
 
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
+                        loginRequest.getEmail().toLowerCase(),
                         loginRequest.getPassword()
                 )
         );
@@ -76,9 +86,25 @@ public class AuthController {
         user.setProvider(AuthProvider.local);
 
         if(userRepository.count()==0) {
-            user.setUserRole("admin");
+            List<Role> rolesList = new ArrayList<>();
+            Optional<Role> adminRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN);
+            if (adminRole.isPresent()) {
+                rolesList.add(adminRole.get());
+                user.setRoles(rolesList);
+
+            }else {
+                throw new RoleNotFoundException("Role could not be fetched from the database");
+            }
+
         }else {
-            user.setUserRole("user");
+            List<Role> rolesList = new ArrayList<>();
+            Optional<Role> userRole = roleRepository.findByName(RoleEnum.ROLE_USER);
+            if (userRole.isPresent()) {
+                rolesList.add(userRole.get());
+                user.setRoles(rolesList);
+            }else {
+                throw new RoleNotFoundException("Role could not be fetched from the database");
+            }
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -88,6 +114,19 @@ public class AuthController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/user/me")
                 .buildAndExpand(result.getId()).toUri();
+
+        String email = result.getEmail();
+        String name = result.getName();
+        String subject = "Registration Successful";
+        String body = String.format("Hi %s \n\n Welcome to Vine wears!!! \n Your Registration was " +
+                "successful, thank you for choosing us, vine wears has got you COVERED, Cheers!!!", name);
+        try {
+            mailjet.sendMail(email, name, subject, body);
+        } catch (MailjetSocketTimeoutException e) {
+            e.printStackTrace();
+        } catch (MailjetException e) {
+            e.printStackTrace();
+        }
 
         return ResponseEntity.created(location)
                 .body(new ApiResponse(true, "User registered successfully@"));

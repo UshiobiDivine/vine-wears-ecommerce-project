@@ -1,13 +1,16 @@
-package com.divine.project.model;
+package com.divine.project.model.user;
+import com.divine.project.model.DateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -24,16 +27,6 @@ public class User {
     @Column(nullable = false)
     private Boolean emailVerified = false;
 
-    @Column(nullable = false)
-    private String userRole;
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-    }
 
     @JsonIgnore
     private String password;
@@ -41,6 +34,12 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
 
     private String providerId;
 
@@ -100,6 +99,14 @@ public class User {
         this.provider = provider;
     }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
     public String getProviderId() {
         return providerId;
     }
@@ -107,4 +114,6 @@ public class User {
     public void setProviderId(String providerId) {
         this.providerId = providerId;
     }
+
+
 }

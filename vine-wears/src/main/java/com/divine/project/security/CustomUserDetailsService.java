@@ -1,7 +1,7 @@
 package com.divine.project.security;
 
 
-import com.divine.project.model.User;
+import com.divine.project.model.user.User;
 import com.divine.project.exception.ResourceNotFoundException;
 import com.divine.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                         new UsernameNotFoundException("User not found with email : " + email)
         );
 
-        return UserPrincipal.createUser(user);
+        System.out.println(user.getRoles());
+        return UserPrincipal.build(user);
     }
 
     @Transactional
@@ -40,6 +41,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         );
 
 
-        return UserPrincipal.createAdmin(user);
+        return UserPrincipal.build(user);
     }
 }

@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="vine-wears" target="1.8" />
+      <module name="vine-wears" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

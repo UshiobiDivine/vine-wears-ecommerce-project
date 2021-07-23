@@ -1,6 +1,6 @@
 package com.divine.project.security;
 
-import com.divine.project.model.User;
+import com.divine.project.model.user.User;
 import com.divine.project.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +41,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
                 Optional<User> userRepositoryById = userRepository.findById(userId);
 
-//                tokenProvider.
-
-                UserDetails userDetails = null;
-                if (userRepositoryById.isPresent()){
-                    if (userRepositoryById.get().getUserRole().equals("user")){
-                        userDetails = customUserDetailsService.loadUserByUsername(userRepositoryById.get().getEmail());
-                    }
-                    if (userRepositoryById.get().getUserRole().equals("admin")){
-                        userDetails = customUserDetailsService.loadUserById(userId);
-                    }
-                }
+                   UserDetails userDetails = customUserDetailsService.loadUserByUsername(userRepositoryById.get().getEmail());
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

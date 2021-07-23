@@ -1,12 +1,10 @@
 package com.divine.project.controller;
 
-import com.divine.project.model.User;
+import com.divine.project.model.user.User;
 import com.divine.project.exception.ResourceNotFoundException;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.CurrentUser;
 import com.divine.project.security.UserPrincipal;
-import com.divine.project.util.mail.MailServiceImplementation;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +15,6 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
-
 
     @GetMapping("/user/me")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
