@@ -9,7 +9,7 @@ spring:
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: create
+            ddl-auto: update
             naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
             temp:
               use_jdbc_metadata_defaults: false

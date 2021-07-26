@@ -10,7 +10,7 @@
         <module name="vine-wears" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="16">
       <module name="vine-wears" target="11" />
     </bytecodeTargetLevel>
   </component>

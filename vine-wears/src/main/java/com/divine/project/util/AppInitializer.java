@@ -19,7 +19,6 @@ public class AppInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        System.out.println("CommandLine Runner called with " + args.toString());
         Role role;
         if (roleRepository.findByName(RoleEnum.ROLE_ADMIN).isEmpty()) {
             role = new Role();

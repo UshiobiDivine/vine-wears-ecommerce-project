@@ -13,6 +13,7 @@ import com.divine.project.payload.SignUpRequest;
 import com.divine.project.repository.RoleRepository;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.TokenProvider;
+import com.divine.project.util.CapcaseString;
 import com.divine.project.util.mail.Mailjet;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
@@ -80,7 +81,7 @@ public class AuthController {
 
         // Creating user's account
         User user = new User();
-        user.setName(signUpRequest.getName().toLowerCase());
+        user.setName(CapcaseString.capitalizeString(signUpRequest.getName()));
         user.setEmail(signUpRequest.getEmail().toLowerCase());
         user.setPassword(signUpRequest.getPassword());
         user.setProvider(AuthProvider.local);
@@ -129,7 +130,7 @@ public class AuthController {
         }
 
         return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "User registered successfully@"));
+                .body(new ApiResponse(true, "User registered successfully"));
     }
 
 }

@@ -1,8 +1,11 @@
 package com.divine.project.model.user;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -13,19 +16,4 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private RoleEnum name;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public RoleEnum getName() {
-        return name;
-    }
-
-    public void setName(RoleEnum name) {
-        this.name = name;
-    }
 }

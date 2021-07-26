@@ -1,6 +1,7 @@
 package com.divine.project.model.user;
 import com.divine.project.model.DateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "users")
 public class User extends DateAudit {
@@ -22,14 +24,19 @@ public class User extends DateAudit {
     @Column(nullable = false)
     private String email;
 
-    private String imageUrl;
+    private String providerId;
 
     @Column(nullable = false)
     private Boolean emailVerified = false;
 
-
     @JsonIgnore
     private String password;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "verification_code_expire_date")
+    private String verificationCodeExpiryDate;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -40,80 +47,6 @@ public class User extends DateAudit {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
-
-    private String providerId;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Boolean getEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setEmailVerified(Boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public AuthProvider getProvider() {
-        return provider;
-    }
-
-    public void setProvider(AuthProvider provider) {
-        this.provider = provider;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public String getProviderId() {
-        return providerId;
-    }
-
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
-    }
 
 
 }

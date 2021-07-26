@@ -1,4 +1,4 @@
-package com.divine.project.controller;
+package com.divine.project.util;
 
 
 import java.net.NetworkInterface;
