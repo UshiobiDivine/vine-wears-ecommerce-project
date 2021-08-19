@@ -1,33 +1,18 @@
-package com.divine.project.payload;
+package com.divine.project.payload.requests;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 /**
  * Created by rajeevkumarsingh on 02/08/17.
  */
-
-public class SignUpRequest {
-    @NotBlank
-    private String name;
-
+public class LoginRequest {
     @NotBlank
     @Email
     private String email;
 
     @NotBlank
-    @Size(min = 6, max = 16, message = "password must be between 6 - 16 characters")
     private String password;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getEmail() {
         return email;

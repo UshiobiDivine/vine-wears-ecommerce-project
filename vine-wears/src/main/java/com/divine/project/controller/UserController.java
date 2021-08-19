@@ -2,7 +2,7 @@ package com.divine.project.controller;
 
 import com.divine.project.model.user.User;
 import com.divine.project.exception.ResourceNotFoundException;
-import com.divine.project.payload.UpdateUserRequest;
+import com.divine.project.payload.requests.UpdateUserRequest;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.CurrentUser;
 import com.divine.project.security.UserPrincipal;
@@ -30,7 +30,6 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
         Optional<User> byId = userRepository.findById(userPrincipal.getId());
-        System.out.println("USER PASSWORD IS " + byId.get().getPassword());
 
         return userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));

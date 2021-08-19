@@ -1,4 +1,4 @@
-package com.divine.project.payload;
+package com.divine.project.payload.responses;
 
 public class AuthResponse {
     private String accessToken;

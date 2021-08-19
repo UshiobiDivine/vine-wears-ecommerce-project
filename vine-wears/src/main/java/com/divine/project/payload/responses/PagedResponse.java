@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Data
-public class PagedItemsResponse<T> {
+public class PagedResponse<T> {
 	private List<T> content;
 	private int page;
 	private int size;
@@ -15,11 +15,11 @@ public class PagedItemsResponse<T> {
 	private int totalPages;
 	private boolean last;
 
-	public PagedItemsResponse() {
+	public PagedResponse() {
 
 	}
 
-	public PagedItemsResponse(List<T> content, int page, int size, long totalElements, int totalPages, boolean last) {
+	public PagedResponse(List<T> content, int page, int size, long totalElements, int totalPages, boolean last) {
 		setContent(content);
 		this.page = page;
 		this.size = size;

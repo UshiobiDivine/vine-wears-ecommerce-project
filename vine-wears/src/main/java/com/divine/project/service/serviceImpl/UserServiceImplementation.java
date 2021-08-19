@@ -4,10 +4,14 @@ import com.divine.project.exception.AppException;
 import com.divine.project.exception.BadRequestException;
 import com.divine.project.exception.PasswordMismatchException;
 import com.divine.project.exception.VerificationCodeExpiredException;
+import com.divine.project.model.user.Role;
+import com.divine.project.model.user.RoleEnum;
 import com.divine.project.model.user.User;
-import com.divine.project.payload.UpdateUserRequest;
-import com.divine.project.payload.UserChangePasswordRequest;
-import com.divine.project.payload.UserForgotPasswordRequest;
+import com.divine.project.payload.requests.UpdateUserRequest;
+import com.divine.project.payload.requests.UserChangePasswordRequest;
+import com.divine.project.payload.requests.UserForgotPasswordRequest;
+import com.divine.project.payload.responses.PagedResponse;
+import com.divine.project.repository.RoleRepository;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.service.UserService;
 import com.divine.project.util.DateUtils;
@@ -20,21 +24,21 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImplementation implements UserService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private RoleRepository roleRepository;
     private Mailjet mailjet;
 
     @Autowired
-    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder, Mailjet mailjet) {
+    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, Mailjet mailjet) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
         this.mailjet = mailjet;
     }
 
@@ -134,5 +138,49 @@ public class UserServiceImplementation implements UserService {
             throw new BadRequestException("Wrong password reset code");
         }
         return true;
+    }
+
+    @Override
+    public boolean giveAdminRole(Long userId) {
+        Optional<User> userById = userRepository.findById(userId);
+        if (userById.isPresent()){
+            Optional<Role> roleOptional = roleRepository.findByName(RoleEnum.ROLE_ADMIN);
+            if (roleOptional.isPresent()) {
+                List<Role> roles = userById.get().getRoles();
+                if (roles.contains(roleOptional.get())){
+                    throw new BadRequestException("The user is already an admin");
+                }
+                roles.add(roleOptional.get());
+                userRepository.save(userById.get());
+                return true;
+            }
+            throw new BadRequestException("ADMIN ROLE NOT SET");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeAdminRole(Long userId) {
+        Optional<User> userById = userRepository.findById(userId);
+        if (userById.isPresent()){
+            Optional<Role> roleOptional = roleRepository.findByName(RoleEnum.ROLE_ADMIN);
+            if (roleOptional.isPresent()) {
+                List<Role> roles = userById.get().getRoles();
+                if (!roles.contains(roleOptional.get())){
+                    throw new BadRequestException("The user is NOT an admin");
+                }
+
+                roles.remove(roleOptional.get());
+                userRepository.save(userById.get());
+                return true;
+            }
+            throw new BadRequestException("ADMIN ROLE NOT SET");
+        }
+        return false;
+    }
+
+    @Override
+    public PagedResponse<User> getAllUsers() {
+        return null;
     }
 }

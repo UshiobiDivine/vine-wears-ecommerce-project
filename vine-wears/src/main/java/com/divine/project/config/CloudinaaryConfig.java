@@ -4,6 +4,8 @@ import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +25,7 @@ public class CloudinaaryConfig {
 
     @Bean
     public Cloudinary cloudinaryConfig() {
-        Cloudinary cloudinary = null;
+        Cloudinary cloudinary;
         Map config = new HashMap();
         config.put("cloud_name", cloudName);
         config.put("api_key", apiKey);
@@ -31,4 +33,9 @@ public class CloudinaaryConfig {
         cloudinary = new Cloudinary(config);
         return cloudinary;
     }
+
+//    @Bean
+//    public MultipartResolver multipartResolver() {
+//        return new CommonsMultipartResolver();
+//    }
 }

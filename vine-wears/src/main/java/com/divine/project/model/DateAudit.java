@@ -1,5 +1,6 @@
 package com.divine.project.model;
 
+import com.divine.project.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -31,9 +33,8 @@ public class DateAudit implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     @CreatedDate
-    @JsonIgnore
+//    @JsonIgnore
     private Date createdAt;
-
 
     @UpdateTimestamp
     @Column(name = "updated_at")

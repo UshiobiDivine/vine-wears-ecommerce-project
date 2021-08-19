@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ColorRepository extends JpaRepository<Color, Long> {
-    Optional<Color> findColorByName(String name);
+    Optional<Color> findByName(String name);
 }

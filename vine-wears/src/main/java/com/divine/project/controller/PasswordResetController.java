@@ -2,9 +2,9 @@ package com.divine.project.controller;
 
 import com.divine.project.model.user.AuthProvider;
 import com.divine.project.model.user.User;
-import com.divine.project.payload.ApiResponse;
-import com.divine.project.payload.UserChangePasswordRequest;
-import com.divine.project.payload.UserForgotPasswordRequest;
+import com.divine.project.payload.responses.ApiResponse;
+import com.divine.project.payload.requests.UserChangePasswordRequest;
+import com.divine.project.payload.requests.UserForgotPasswordRequest;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.CurrentUser;
 import com.divine.project.security.UserPrincipal;

@@ -109,10 +109,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                         .permitAll()
-                .antMatchers("/item/admin/**").hasRole("ADMIN")
-                .antMatchers("/item/user/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/item/admin/**", "/admin/**").hasRole("ADMIN")
+                .antMatchers("/item/**").hasAnyRole("ADMIN", "USER")
                     .antMatchers("/auth/**", "/oauth2/**", "/user/sendCode/**",
-                            "/user/reset_code/**", "/user/password_reset/**")
+                            "/user/reset_code/**", "/user/password_reset/**", "/category/**")
                         .permitAll()
                     .anyRequest()
                         .authenticated()

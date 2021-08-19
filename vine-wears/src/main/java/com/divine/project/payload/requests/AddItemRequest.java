@@ -3,6 +3,7 @@ package com.divine.project.payload.requests;
 import com.divine.project.model.Category;
 import com.divine.project.model.Color;
 import com.divine.project.model.Size;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -14,8 +15,10 @@ public class AddItemRequest {
     @NotBlank
     private String name;
 
-    @NotBlank
     private String imageUrl;
+
+//    @JsonIgnore
+//    private String image;
 
     @NotBlank
     private String price;

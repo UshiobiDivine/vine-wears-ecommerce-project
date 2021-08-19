@@ -1,4 +1,4 @@
-package com.divine.project.payload;
+package com.divine.project.payload.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

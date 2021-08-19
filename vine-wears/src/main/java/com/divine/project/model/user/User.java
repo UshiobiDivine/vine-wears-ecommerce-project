@@ -13,9 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User extends DateAudit {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -47,6 +44,5 @@ public class User extends DateAudit {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
-
 
 }

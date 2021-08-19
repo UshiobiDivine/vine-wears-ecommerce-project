@@ -6,10 +6,10 @@ import com.divine.project.model.user.Role;
 import com.divine.project.model.user.RoleEnum;
 import com.divine.project.model.user.User;
 import com.divine.project.model.user.AuthProvider;
-import com.divine.project.payload.ApiResponse;
-import com.divine.project.payload.AuthResponse;
-import com.divine.project.payload.LoginRequest;
-import com.divine.project.payload.SignUpRequest;
+import com.divine.project.payload.responses.ApiResponse;
+import com.divine.project.payload.responses.AuthResponse;
+import com.divine.project.payload.requests.LoginRequest;
+import com.divine.project.payload.requests.SignUpRequest;
 import com.divine.project.repository.RoleRepository;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.TokenProvider;
@@ -89,10 +89,11 @@ public class AuthController {
         if(userRepository.count()==0) {
             List<Role> rolesList = new ArrayList<>();
             Optional<Role> adminRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN);
-            if (adminRole.isPresent()) {
+            Optional<Role> userRole = roleRepository.findByName(RoleEnum.ROLE_USER);
+            if (adminRole.isPresent()&&userRole.isPresent()) {
                 rolesList.add(adminRole.get());
+                rolesList.add(userRole.get());
                 user.setRoles(rolesList);
-
             }else {
                 throw new RoleNotFoundException("Role could not be fetched from the database");
             }
@@ -121,13 +122,13 @@ public class AuthController {
         String subject = "Registration Successful";
         String body = String.format("Hi %s \n\n Welcome to Vine wears!!! \n Your Registration was " +
                 "successful, thank you for choosing us, vine wears has got you COVERED, Cheers!!!", name);
-        try {
-            mailjet.sendMail(email, name, subject, body);
-        } catch (MailjetSocketTimeoutException e) {
-            e.printStackTrace();
-        } catch (MailjetException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mailjet.sendMail(email, name, subject, body);
+//        } catch (MailjetSocketTimeoutException e) {
+//            e.printStackTrace();
+//        } catch (MailjetException e) {
+//            e.printStackTrace();
+//        }
 
         return ResponseEntity.created(location)
                 .body(new ApiResponse(true, "User registered successfully"));

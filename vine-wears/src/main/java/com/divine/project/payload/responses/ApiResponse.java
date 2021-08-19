@@ -1,4 +1,4 @@
-package com.divine.project.payload;
+package com.divine.project.payload.responses;
 
 public class ApiResponse {
     private boolean success;

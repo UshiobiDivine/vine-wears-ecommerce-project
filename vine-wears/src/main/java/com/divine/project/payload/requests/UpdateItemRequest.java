@@ -6,6 +6,7 @@ import com.divine.project.model.Size;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -25,7 +26,7 @@ public class UpdateItemRequest {
     @NotBlank
     private String quantityAvailable;
 
-    @NotBlank
+    @NotNull
     private List<Category> categories;
 
     private List<Color> colors;
