@@ -9,6 +9,7 @@ public class SpringSocialApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
 	}
 
 }
