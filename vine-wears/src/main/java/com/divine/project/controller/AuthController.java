@@ -13,6 +13,7 @@ import com.divine.project.payload.requests.SignUpRequest;
 import com.divine.project.repository.RoleRepository;
 import com.divine.project.repository.UserRepository;
 import com.divine.project.security.TokenProvider;
+import com.divine.project.service.AuthService;
 import com.divine.project.util.CapcaseString;
 import com.divine.project.util.mail.Mailjet;
 import com.mailjet.client.errors.MailjetException;
@@ -20,6 +21,7 @@ import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,6 +52,8 @@ public class AuthController {
     private TokenProvider tokenProvider;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private AuthService authService;
 
     @Autowired
     private Mailjet mailjet;
@@ -58,7 +62,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-
+        boolean authenticateUser = authService.authenticateUser(loginRequest);
+        if (!authenticateUser){
+            throw new BadCredentialsException("Invalid Login Details");
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail().toLowerCase(),

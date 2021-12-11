@@ -30,7 +30,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                         new UsernameNotFoundException("User not found with email : " + email)
         );
 
-        System.out.println(user.getRoles());
         return UserPrincipal.build(user);
     }
 
